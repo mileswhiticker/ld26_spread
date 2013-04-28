@@ -10,26 +10,41 @@ public partial class Player : MonoBehaviour
 		Movement();
 	}
 	
+	float tLeftClick = 0;
 	void Update()
 	{
-		if(gameController && Input.GetButton("Jump"))
+		
+		if(tLeftCantPickup > 0)
 		{
-			if(tLeftAttracting <= 0)
-			{
-				if(energy > energyPerAttract)
-				{
-					energy -= energyPerAttract;
-					gameController.PlayerAttract();
-					tLeftAttracting = 5.0f;
-				}
-			}
-			else
-			{
-				tLeftAttracting -= Time.deltaTime;
-			}
+			tLeftCantPickup -= Time.deltaTime;
 		}
 		
-		//
-		RegularEnergyRelease(Time.deltaTime);
+		if(tLeftToggleDrops > 0)
+		{
+			tLeftToggleDrops -= Time.deltaTime;
+		}
+		
+		if(playerControlled)
+		{
+			if(gameController && Input.GetButton("Jump"))
+			{
+				if(tLeftAttracting <= 0)
+				{
+					if(energy > energyPerAttract)
+					{
+						energy -= energyPerAttract;
+						gameController.PlayerAttract();
+						tLeftAttracting = 5.0f;
+					}
+				}
+				else
+				{
+					tLeftAttracting -= Time.deltaTime;
+				}
+			}
+			
+			//
+			RegularEnergyRelease(Time.deltaTime);
+		}
 	}
 }

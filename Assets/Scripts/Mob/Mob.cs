@@ -11,6 +11,10 @@ public partial class Mob : MonoBehaviour
 	
 	public float tLeftAttracted = 0;
 	public Player attractedPlayer;
+	public float tLeftUnhealthy = 0;
+	public float tLeftCantPickup = 0;
+	
+	public GameController gameController;
 	
 	//for the template
 	public bool permaFrozen = true;
@@ -18,11 +22,19 @@ public partial class Mob : MonoBehaviour
 	void Start()
 	{
 		gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
-		wanderTarget = gameController.GetRandomMapPoint();
 	}
 	
 	void Update()
 	{
+		if(tLeftUnhealthy > 0)
+		{
+			tLeftUnhealthy -= Time.deltaTime;
+		}
+		if(tLeftCantPickup > 0)
+		{
+			tLeftCantPickup -= Time.deltaTime;
+		}
+		
 		if(!permaFrozen)
 		{
 			if(tLeftAttracted > 0)
@@ -38,14 +50,36 @@ public partial class Mob : MonoBehaviour
 			{
 				MoveToWanderTarget();
 				tLeftDropSplotch -= Time.deltaTime;
-				if(tLeftDropSplotch <= 0)
+				if(tLeftDropSplotch <= 0 && gameController.enemySplotchProgress < gameController.splotchesToWin)
 				{
 					tLeftDropSplotch = 10 - mobLevel;
 					Vector3 spawnPos = this.transform.position;
 					spawnPos.z = 0;
-					gameController.CreateSplotch(spawnPos, isMachine);
+					gameController.CreateSplotch(spawnPos, mobLevel, isMachine);
 				}
 			}
+		}
+	}
+	
+	public void DownGrade()
+	{
+		//when hit by the player, if they're more powerful than us
+		tLeftCantPickup = 5.0f;
+		mobLevel -= 1;
+		gameController.CreateSparkly(this.transform.position);
+		//newSparkly.rigidbody.AddForce(-25 + Random.value * 50, -25 + Random.value * 50, 0);
+		/*for(int i=0;i<mobLevel + 1;++i)
+		{
+			Sparkly newSparkly = gameController.CreateSparkly(this.transform.position);
+			newSparkly.rigidbody.AddForce(-25 + Random.value * 50, -25 + Random.value * 50, 0);
+		}*/
+		if(mobLevel > 0)
+		{
+			SetLevel(mobLevel);
+		}
+		else
+		{
+			gameController.DestroyGameObject(this.gameObject);
 		}
 	}
 	
@@ -54,9 +88,24 @@ public partial class Mob : MonoBehaviour
 		isMachine = a_IsMachine;
 		permaFrozen = false;
 		
+		SetLevel(mobLevel);
+		if(a_IsFriend)
+		{
+			renderer.material.SetColor("_Color",Color.blue);
+		}
+		else
+		{
+			renderer.material.SetColor("_Color",Color.red);
+		}
+		wanderTarget = gameController.GetRandomMapPoint();
+	}
+	
+	public void SetLevel(int a_NewLevel)
+	{
+		mobLevel = a_NewLevel;
 		if(mobLevel > 0 && mobLevel <= 6)
 		{
-			if(a_IsMachine)
+			if(isMachine)
 			{
 				this.gameObject.renderer.material.mainTexture = (Texture2D)Resources.Load("machine" + mobLevel);
 			}
@@ -65,10 +114,9 @@ public partial class Mob : MonoBehaviour
 				this.gameObject.renderer.material.mainTexture = (Texture2D)Resources.Load("organic" + mobLevel);
 			}
 		}
-		
-		if(!a_IsFriend)
+		else
 		{
-			renderer.material.SetColor("_Color",Color.red);
+			GameController.DestroyObject(this.gameObject);
 		}
 	}
 }

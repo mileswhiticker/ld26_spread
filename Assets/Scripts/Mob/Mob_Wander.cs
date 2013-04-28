@@ -7,8 +7,6 @@ public partial class Mob : MonoBehaviour
 	public float maxSpeed = 5;
 	public Vector3 wanderTarget;
 	float tLeftRechooseDest = 45;
-	GameController gameController;
-	
 	void MoveToWanderTarget()
 	{
 		//failsafe, in case any get bugged
@@ -21,26 +19,18 @@ public partial class Mob : MonoBehaviour
 		
 		//forward movement
 		float sqrDist = (wanderTarget - this.transform.position).sqrMagnitude;
+		Vector3 targetDir = (wanderTarget - this.transform.position).normalized;
 		if(sqrDist < 1)
 		{
 			wanderTarget = gameController.GetRandomMapPoint();
 		}
 		else if(this.rigidbody.velocity.sqrMagnitude < maxSpeed * maxSpeed)
 		{
-			Vector3 targetDir = wanderTarget - this.transform.position;
-			this.rigidbody.AddForce(targetDir.normalized);
-			//Debug.Log("rotating");
-			
-			//this.transform.rotation = newOrientation;
-		}
-		/*float vertAxis = Input.GetAxis ("Vertical");
-		if(vertAxis != 0 && this.rigidbody.velocity.sqrMagnitude < maxSpeed * maxSpeed)
-		{
-			Vector3 newForce = this.transform.rotation * Vector3.down;
-			this.rigidbody.AddForce(newForce);
+			//this.rigidbody.AddForce(this.transform.rotation * Vector3.up * Time.deltaTime * 50);
+			this.rigidbody.AddForce(targetDir * Time.deltaTime * 50);
 		}
 		
-		//steering
-		this.transform.Rotate(new Vector3(0,0, -3 * Input.GetAxis ("Horizontal")));*/
+		if(this.rigidbody.velocity.sqrMagnitude > 0)
+			this.transform.rotation = Quaternion.LookRotation(targetDir) * Quaternion.LookRotation(Vector3.down);
 	}
 }

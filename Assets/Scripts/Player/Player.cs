@@ -3,29 +3,34 @@ using System.Collections;
 
 public partial class Player : MonoBehaviour
 {
-	int[] contents;
 	Camera mainCamera;
 	public float maxSpeed = 5;
 	public bool isMachine = true;
 	public int playerLevel = 1;
+	public float tLeftCantPickup = 0;
 	
+	public float tLeftToggleDrops = 0;
+	
+	public bool playerControlled = false;
 	GameController gameController;
+	public float energy = 10;
 	
 	void Start()
 	{
-		contents = new int[5];
-		for(int i=0;i<5;++i)
-		{
-			contents[i] = 0;
-		}
-		//todo: init gui?
-		
 		gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+		energy = gameController.playerStartingEnergy;
 	}
 	
-	public void Upgrade()
+	public void ChangeLevel(int a_NewLevel = 0)
 	{
-		playerLevel += 1;
+		if(a_NewLevel > 0)
+		{
+			playerLevel = a_NewLevel;
+		}
+		else
+		{
+			playerLevel += 1;
+		}
 		if(playerLevel > 0 && playerLevel <= 6)
 		{
 			if(isMachine)

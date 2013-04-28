@@ -48,7 +48,10 @@
      <Compile Include="Assets\Scripts\GameController\GameController.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_Cleanup.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_GUI.cs" />
+     <Compile Include="Assets\Scripts\GameController\GameController_GameOver.cs" />
+     <Compile Include="Assets\Scripts\GameController\GameController_Levels.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_Map.cs" />
+     <Compile Include="Assets\Scripts\GameController\GameController_MenusScore.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_Mobs.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_Player.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_Sparklies.cs" />
@@ -60,11 +63,12 @@
      <Compile Include="Assets\Scripts\Player\Player.cs" />
      <Compile Include="Assets\Scripts\Player\Player_Attracting.cs" />
      <Compile Include="Assets\Scripts\Player\Player_Collision.cs" />
-     <Compile Include="Assets\Scripts\Player\Player_EnergyRelease.cs" />
      <Compile Include="Assets\Scripts\Player\Player_Movement.cs" />
+     <Compile Include="Assets\Scripts\Player\Player_Splotches.cs" />
      <Compile Include="Assets\Scripts\Player\Player_Update.cs" />
      <Compile Include="Assets\Scripts\Sparkly.cs" />
-     <Compile Include="Assets\Scripts\Splotch.cs" />
+     <Compile Include="Assets\Scripts\Splotch\Splotch.cs" />
+     <Compile Include="Assets\Scripts\Splotch\Splotch_Collision.cs" />
      <None Include="Assets\Shaders\ShapeShader.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
