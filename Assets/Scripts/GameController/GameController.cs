@@ -44,6 +44,7 @@ public partial class GameController : MonoBehaviour
 	public GameObject teamMarker;
 	public GameObject scoreBackground;
 	public GameObject cancel;
+	public GameObject door;
 	public float scoreMoveProgress = 1;
 	public int scoreMoveDirection = 0;
 	Texture2D textureMachine;
