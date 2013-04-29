@@ -21,6 +21,9 @@ public partial class Player : MonoBehaviour
 				spawnPos.z = 0;
 				gameController.CreateSplotch(spawnPos, playerLevel, isMachine);
 				
+				//play sound
+				gameController.audio.PlayOneShot(gameController.dropSplotch);
+				
 				//bookkeeping
 				energy -= energyPerSplotch;
 				tLeftReleaseSplotch = dropIntervals;

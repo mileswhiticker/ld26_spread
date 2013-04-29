@@ -10,7 +10,6 @@ public partial class Player : MonoBehaviour
 		Movement();
 	}
 	
-	float tLeftClick = 0;
 	void Update()
 	{
 		

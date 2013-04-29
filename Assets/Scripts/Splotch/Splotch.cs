@@ -24,6 +24,11 @@ public partial class Splotch : MonoBehaviour
 			tLeftUntilMerge -= Time.deltaTime;
 		}
 		
+		if(this.transform.position.x < gameController.leftBorder.transform.position.x)
+		{
+			//
+		}
+		
 		/*for(int index=0;index<overlappingSplotchGameObjects.Count;++index)
 		{
 			GameObject gameObject = overlappingSplotchGameObjects[index];

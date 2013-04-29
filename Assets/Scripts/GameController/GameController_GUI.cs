@@ -7,6 +7,19 @@ public partial class GameController : MonoBehaviour
 	{
 		float deltaT = Time.realtimeSinceStartup - lastOnGUITime;
 		lastOnGUITime = Time.realtimeSinceStartup;
+
+		if(tLeftChangeQuote <= 0)
+		{
+			curQuoteIndex = (int)Mathf.Floor(Random.value * quotes.Length);
+			curQuote = quotes[curQuoteIndex];
+			tLeftChangeQuote = 25.0f;
+		}
+		else
+		{
+			tLeftChangeQuote -= deltaT;
+		}
+		GUI.Label(new Rect(0,0,Screen.width, Screen.height), " " + curQuote);
+		
 		//scoreboard is moving
 		if(scoreMoveDirection != 0)
 		{
@@ -43,20 +56,20 @@ public partial class GameController : MonoBehaviour
 		else if(scoreMoveProgress == 0)
 		{
 			//ingame pause button (click anywhere on the screen)
-			if(GUI.Button(new Rect(
+			/*if(GUI.Button(new Rect(
 				0,
 				0,
 				Screen.width,
 				Screen.height),
 				"",
-				GUIStyle.none))
-			/*if(GUI.Button(new Rect(
+				GUIStyle.none))*/
+			if(GUI.Button(new Rect(
 				5 * Screen.width / 12.0f,
 				5 * Screen.height / 12.0f ,
 				Screen.width / 6.0f,
 				Screen.height / 6.0f),
 				"",
-				GUIStyle.none))*/
+				GUIStyle.none))
 			{
 				//teamTexture = (Texture2D)Resources.Load(teamTexName + Mathf.Ceil(Random.value * 3.0f));
 				scoreBackground.renderer.material.mainTexture = (Texture2D)Resources.Load("white_half_trans");
@@ -68,6 +81,10 @@ public partial class GameController : MonoBehaviour
 				ShowMenu();
 				Time.timeScale = 0;
 			}
+		}
+		else if(scoreMoveProgress == 1)
+		{
+			GUI.Label(new Rect(Screen.width / 2 - 75, Screen.height/2 + 200, 200, 200), "Use WASD to move around.");
 		}
 		
 		if(handleMenu)
@@ -85,6 +102,18 @@ public partial class GameController : MonoBehaviour
 			else
 			{
 				newScale.x = player.energy / 5.0f;
+				float diff = newScale.x - 10;
+				while(diff > 0)
+				{
+					Vector3 spawnPos = player.transform.position;
+					spawnPos.z = 0;
+					CreateSplotch(spawnPos, 1, player.isMachine);
+					diff -= player.energyPerSplotch;
+				}
+			}
+			if(newScale.y > 0.5)
+			{
+				newScale.y -= Time.deltaTime;
 			}
 			energyBar.transform.localScale = newScale;
 			
@@ -120,6 +149,18 @@ public partial class GameController : MonoBehaviour
 		newScale.y = 0;
 		energyBar.transform.localScale = newScale;
 		
+		newScale = progressBorder.transform.localScale;
+		newScale.y = 0.0f;
+		progressBorder.transform.localScale = newScale;
+		
+		newScale = sparklyLine.transform.localScale;
+		newScale.y = 0.0f;
+		sparklyLine.transform.localScale = newScale;
+		
+		newScale = mobLine.transform.localScale;
+		newScale.y = 0.0f;
+		mobLine.transform.localScale = newScale;
+		
 		/*newScale = machine.transform.localScale;
 		newScale.y = 0;
 		machine.transform.localScale = newScale;
@@ -144,6 +185,18 @@ public partial class GameController : MonoBehaviour
 		newScale.y = 0.5f;
 		energyBar.transform.localScale = newScale;
 		
+		newScale = progressBorder.transform.localScale;
+		newScale.y = 1.0f;
+		progressBorder.transform.localScale = newScale;
+		
+		newScale = sparklyLine.transform.localScale;
+		newScale.y = 1.0f;
+		sparklyLine.transform.localScale = newScale;
+		
+		newScale = mobLine.transform.localScale;
+		newScale.y = 1.0f;
+		mobLine.transform.localScale = newScale;
+		
 		/*newScale = machine.transform.localScale;
 		newScale.y = 1;
 		machine.transform.localScale = newScale;
@@ -155,23 +208,47 @@ public partial class GameController : MonoBehaviour
 	
 	void UpdateMachineBar(float a_PercentProgress)
 	{
-		Vector3 newScale = machineProgressBar.transform.localScale;
-		newScale.x = a_PercentProgress * 5.0f;
-		machineProgressBar.transform.localScale = newScale;
-		//
-		Vector3 newPos = machineProgressBar.transform.localPosition;
-		newPos.x = a_PercentProgress * 2.5f;
-		machineProgressBar.transform.localPosition = newPos;
+		if(player.playerControlled)
+		{
+			Vector3 newScale = machineProgressBar.transform.localScale;
+			newScale.x = a_PercentProgress * 5.0f;
+			if(player.isMachine)
+			{
+				float upgradeProgress = (100 * a_PercentProgress - ((player.playerLevel - 1) * 17.0f)) / (player.playerLevel * 17.0f);
+				newScale.y = 0.01f + 0.74f * upgradeProgress;
+			}
+			else
+			{
+				newScale.y = 0.01f + 0.74f * ((float)player.playerLevel / 6.0f);
+			}
+			machineProgressBar.transform.localScale = newScale;
+			//
+			Vector3 newPos = machineProgressBar.transform.localPosition;
+			newPos.x = a_PercentProgress * 2.5f;
+			machineProgressBar.transform.localPosition = newPos;
+		}
 	}
 	
 	void UpdateOrganicBar(float a_PercentProgress)
 	{
-		Vector3 newScale = organicProgressBar.transform.localScale;
-		newScale.x = -a_PercentProgress * 5.0f;
-		organicProgressBar.transform.localScale = newScale;
-		//
-		Vector3 newPos = organicProgressBar.transform.localPosition;
-		newPos.x = -a_PercentProgress * 2.5f;
-		organicProgressBar.transform.localPosition = newPos;
+		if(player.playerControlled)
+		{
+			Vector3 newScale = organicProgressBar.transform.localScale;
+			newScale.x = -a_PercentProgress * 5.0f;
+			if(!player.isMachine)
+			{
+				float upgradeProgress = (100 * a_PercentProgress - ((player.playerLevel - 1) * 17.0f)) / (player.playerLevel * 17.0f);
+				newScale.y = 0.01f + 0.74f * upgradeProgress;
+			}
+			else
+			{
+				newScale.y = 0.01f + 0.74f * ((float)player.playerLevel / 6.0f);
+			}
+			organicProgressBar.transform.localScale = newScale;
+			//
+			Vector3 newPos = organicProgressBar.transform.localPosition;
+			newPos.x = -a_PercentProgress * 2.5f;
+			organicProgressBar.transform.localPosition = newPos;
+		}
 	}
 }

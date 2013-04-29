@@ -12,7 +12,7 @@ public partial class Player : MonoBehaviour
 			if(vertAxis != 0 && Mathf.Abs(this.rigidbody.velocity.sqrMagnitude) < maxSpeed * maxSpeed)
 			{
 				Vector3 newForce = this.transform.rotation * Vector3.down * vertAxis * playerLevel;
-				this.rigidbody.AddForce(newForce);
+				this.rigidbody.AddForce(newForce * 10);
 			}
 			
 			//steering

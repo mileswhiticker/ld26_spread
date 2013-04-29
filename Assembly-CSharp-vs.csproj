@@ -44,6 +44,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Attract.cs" />
      <Compile Include="Assets\Scripts\Camera_Tracking.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_Cleanup.cs" />
@@ -51,11 +52,14 @@
      <Compile Include="Assets\Scripts\GameController\GameController_GameOver.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_Levels.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_Map.cs" />
-     <Compile Include="Assets\Scripts\GameController\GameController_MenusScore.cs" />
+     <Compile Include="Assets\Scripts\GameController\GameController_Menus.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_Mobs.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_Player.cs" />
+     <Compile Include="Assets\Scripts\GameController\GameController_Score.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_Sparklies.cs" />
      <Compile Include="Assets\Scripts\GameController\GameController_Splotches.cs" />
+     <Compile Include="Assets\Scripts\GameController\GameController_Update.cs" />
+     <Compile Include="Assets\Scripts\GameController\GameController_UpdateProgress.cs" />
      <Compile Include="Assets\Scripts\Mob\Mob.cs" />
      <Compile Include="Assets\Scripts\Mob\Mob_Collision.cs" />
      <Compile Include="Assets\Scripts\Mob\Mob_Pickup.cs" />

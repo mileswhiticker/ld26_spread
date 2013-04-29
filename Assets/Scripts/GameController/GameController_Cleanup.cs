@@ -91,6 +91,8 @@ public partial class GameController : MonoBehaviour
 		friendlySplotchProgress = 0;
 		enemySplotchProgress = 0;
 		
+		Time.timeScale = 1;
+		
 		//reset GUI
 		//
 		Vector3 newScale = machineProgressBar.transform.localScale;

@@ -84,16 +84,13 @@ public partial class GameController : MonoBehaviour
 			GUIStyle.none
 			))
 		{
-			if(Time.timeScale == 0)
-			{
-				Time.timeScale = 1;
-				handleMenu = false;
-				ShowGui();
-				
-				//reset the tree/machine colours
-				tree.renderer.material.SetColor("_Color",Color.white);
-				machine.renderer.material.SetColor("_Color",Color.white);
-			}
+			Time.timeScale = 1;
+			handleMenu = false;
+			ShowGui();
+			
+			//reset the tree/machine colours
+			tree.renderer.material.SetColor("_Color",Color.white);
+			machine.renderer.material.SetColor("_Color",Color.white);
 		}
 		
 		//teamMarker.renderer.material.mainTexture = (Texture2D)Resources.Load(teamTexName + Mathf.Ceil(Random.value * 3.0f));

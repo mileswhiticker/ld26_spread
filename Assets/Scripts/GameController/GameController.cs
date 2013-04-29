@@ -34,6 +34,7 @@ public partial class GameController : MonoBehaviour
 	int curLevel = 0;
 	public int friendlySplotchProgress = 0;
 	public int enemySplotchProgress = 0;
+	float tLeftUpdateHelpers = 0;
 	
 	//GUI
 	public GameObject organicProgressBar;
@@ -45,6 +46,7 @@ public partial class GameController : MonoBehaviour
 	public GameObject scoreBackground;
 	public GameObject cancel;
 	public GameObject door;
+	public GameObject progressBorder;
 	public float scoreMoveProgress = 1;
 	public int scoreMoveDirection = 0;
 	Texture2D textureMachine;
@@ -53,6 +55,11 @@ public partial class GameController : MonoBehaviour
 	Texture2D redTex;
 	bool handleMenu = true;
 	float lastOnGUITime = 0;
+	
+	public GameObject topBorder;
+	public GameObject bottomBorder;
+	public GameObject leftBorder;
+	public GameObject rightBorder;
 	
 	//scoring
 	int[] friendlyBumpScores;	//unused
@@ -65,13 +72,45 @@ public partial class GameController : MonoBehaviour
 	int friendlySplotchDestroyed = 0;
 	bool won = true;
 	bool playerIsMachineNextGame = true;
+	string[] quotes;
+	
+	Sparkly sparklyTarget;
+	GameObject gameObjectTarget;
+	public GameObject sparklyLine;
+	public GameObject mobLine;
+	
+	//sound
+	public AudioClip chargeup;
+	public AudioClip pickup;
+	public AudioClip blip;
+	public AudioClip dropSplotch;
+	public AudioClip upgrade;
+	public AudioClip fail;
+	public AudioClip win;
 	
 	void Start()
 	{
+		quotes = new string[11];
+		quotes[0] = "Be Content with what you have; rejoice in the way things are. When you realize there is nothing lacking, the whole world belongs to you. - Lao Tzu";
+		quotes[1] = "It looks like you can write a minimalist piece without much bleeding. And you can. But not a good one. - David Foster Wallace";
+		quotes[2] = "The secret of happiness, you see, is not found in seeking more, but in developing the capacity to enjoy less. - Socrates";
+		quotes[3] = "Nature does not hurry, yet everything is accomplished. - Lao Tzu";
+		quotes[4] = "A good traveller has no fixed plans, and is not intent on arriving. - Lao Tzu";
+		quotes[5] = "Less is more. - Ludwig Mies van der Rohe";
+		quotes[6] = "The ability to simplify means to eliminate the unnecessary so that the necessary may speak. - Hans Hofmann";
+		quotes[7] = "Life is really simple, but we insist on making it complicated. - Confucius";
+		quotes[8] = "People love chopping wood. In this activity one immediately sees results. - Albert Einstein";
+		quotes[9] = "There's more to some things than meets the eye. - Anonymous";
+		quotes[10] = "Potatoes. - Ludum Dare 26 Competitor";
+		//quotes[5] = "asdasd";
+		
 		textureMachine = (Texture2D)Resources.Load("machine");
 		textureMachine.filterMode = FilterMode.Point;
 		textureTree = (Texture2D)Resources.Load("tree");
 		textureTree.filterMode = FilterMode.Point;
+		
+		sparklyAttract = sparklyLine.GetComponent<Attract>();
+		mobAttract = sparklyLine.GetComponent<Attract>();
 		
 		greenTex = (Texture2D)Resources.Load("col_green");
 		redTex = (Texture2D)Resources.Load("col_red");
@@ -103,101 +142,5 @@ public partial class GameController : MonoBehaviour
 		wanderTargets[5] = new Vector3(15,0, mobTemplate.transform.position.z);
 		wanderTargets[6] = new Vector3(0,15, mobTemplate.transform.position.z);
 		wanderTargets[7] = new Vector3(0,-15, mobTemplate.transform.position.z);
-	}
-	
-	void Update()
-	{
-		if(curLevel > 0)
-		{
-			timeTaken += Time.deltaTime;
-			
-			//populate friendly mobs
-			//tLeftNextFriendlySpawn = 9.0f;
-			if(tLeftNextFriendlySpawn <= 0)
-			{
-				if(friendlyMobs.Count < splotchesToWin / 100)
-				{
-					friendlyMobs.Add(CreateMob(player.isMachine));
-					tLeftNextFriendlySpawn = 0.5f;
-				}
-			}
-			else
-			{
-				tLeftNextFriendlySpawn -= Time.deltaTime;
-			}
-			
-			//populate enemy mobs
-			//tLeftNextEnemySpawn = 9.0f;
-			if(tLeftNextEnemySpawn <= 0)
-			{
-				if(enemyMobs.Count < player.playerLevel * 5)
-				{
-					enemyMobs.Add(CreateMob(!player.isMachine));
-					tLeftNextEnemySpawn = 0.5f;
-				}
-			}
-			else
-			{
-				tLeftNextEnemySpawn -= Time.deltaTime;
-			}
-			
-			//spawn a sparkly
-			if(tLeftNextSparklySpawn <= 0)
-			{
-				SpawnNewSparkly();
-				tLeftNextSparklySpawn = 1.5f + Random.value * 2.5f;
-			}
-			else
-			{
-				if((float)sparklies.Count / (float)splotchesToWin <  targetSparklyPercentage)
-				tLeftNextSparklySpawn -= Time.deltaTime;
-			}
-			
-			//update win percentage
-			/*if(updateWinPercentNext)
-			{
-				winPercent = (float)(friendlySplotches.Count - enemySplotches.Count) / (float)splotchesToWin;
-				updateWinPercentNext = false;
-				//Debug.Log("Progress: " + (float)splotches.Count / (float)splotchesToWin);
-				
-				//winning and upgrading
-				if(winPercent >= 1)
-				{
-					curLevel = 0;
-					player.playerControlled = false;
-					ResetLevel();
-				}
-				else if(winPercent * 100 > player.playerLevel * 15)
-				{
-					player.ChangeLevel();
-				}
-			}*/
-		}
-	}
-	
-	public void IncrementSparklyCounter()
-	{
-		if(curLevel > 0)
-			sparkliesEaten += 1;
-	}
-	public void IncrementEnemySplotchCreatedCounter()
-	{
-		if(curLevel > 0)
-			enemySplotchCreated += 1;
-	}
-	public void IncrementEnemySplotchDestroyedCounter()
-	{
-		if(curLevel > 0)
-			enemySplotchDestroyed += 1;
-	}
-	public void IncrementFriendlyBump(int a_Level)
-	{
-		if(curLevel > 0)
-			friendlyBumpScores[a_Level] += 1;
-	}
-	public void IncrementEnemyBump(int a_Level)
-	{
-		if(curLevel > 0)
-			enemyBumpScores[a_Level] += 1;
 	}
 }

@@ -33,6 +33,7 @@ public partial class Player : MonoBehaviour
 				if(mob.mobLevel < playerLevel)
 				{
 					mob.DownGrade();
+					gameController.audio.PlayOneShot(gameController.blip);
 					if(mob.isMachine == isMachine)
 					{
 						gameController.IncrementFriendlyBump(mob.mobLevel);

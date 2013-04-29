@@ -4,7 +4,7 @@ using System.Collections;
 public partial class Mob : MonoBehaviour
 {
 	//todo: make this a static or global
-	public float maxSpeed = 5;
+	public float maxSpeed = 4;
 	public Vector3 wanderTarget;
 	float tLeftRechooseDest = 45;
 	void MoveToWanderTarget()

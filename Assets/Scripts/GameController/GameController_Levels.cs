@@ -25,5 +25,11 @@ public partial class GameController : MonoBehaviour
 		curLevel = 1;
 		player.playerControlled = true;
 		handleMenu = false;
+		
+		//place a sparkly somewhere near the player
+		Vector3 spawnPos = sparklyTemplate.transform.position;
+		spawnPos.x = player.transform.position.x + 250 + Random.value * (Screen.width - 250);
+		spawnPos.y = player.transform.position.y + 250 + Random.value * (Screen.height - 250);
+		CreateSparkly(spawnPos);
 	}
 }
